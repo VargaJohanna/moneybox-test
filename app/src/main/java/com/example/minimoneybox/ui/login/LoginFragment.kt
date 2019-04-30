@@ -37,27 +37,34 @@ class LoginFragment : Fragment() {
     }
 
     private fun allFieldsValid(): Boolean {
-        var allValid = false
+        hideErrors()
+        val emailValid = Pattern.matches(EMAIL_REGEX, et_email.text.toString())
+        val passwordValid = Pattern.matches(PASSWORD_REGEX, et_password.text.toString())
+        val nameValid = Pattern.matches(NAME_REGEX, et_name.text.toString().replace("\\s".toRegex(), "")) || et_name.text.toString().isEmpty()
 
-        if (Pattern.matches(EMAIL_REGEX, et_email.text.toString())) {
-            allValid = true
-        } else {
-            til_email.error = getString(R.string.email_address_error)
+        if (!nameValid) {
+            til_name.error = getString(R.string.full_name_error)
         }
 
-        if (Pattern.matches(PASSWORD_REGEX, et_password.text.toString())) {
-            allValid = true
-        } else {
+        return if (!emailValid && !passwordValid) {
             til_password.error = getString(R.string.password_error)
-        }
-
-        if (Pattern.matches(NAME_REGEX, et_password.text.toString())) {
-            allValid = true
+            til_email.error = getString(R.string.email_address_error)
+            false
+        } else if(!emailValid) {
+            til_email.error = getString(R.string.email_address_error)
+            false
+        } else if(!passwordValid) {
+            til_password.error = getString(R.string.password_error)
+            false
         } else {
-            til_email.error = getString(R.string.full_name_error)
+            true
         }
+    }
 
-        return allValid
+    private fun hideErrors() {
+        til_email.error = null
+        til_password.error = null
+        til_name.error = null
     }
 
     private fun setupAnimation() {
