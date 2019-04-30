@@ -1,5 +1,6 @@
 package com.example.minimoneybox.ui.login
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +69,21 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupAnimation() {
-        pig_animation.playAnimation()
+        pig_animation.setMaxFrame(firstAnim.second)
+        pig_animation.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {
+                pig_animation.setMinAndMaxFrame(secondAnim.first, secondAnim.second)
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationStart(p0: Animator?) {
+            }
+        })
     }
 
     companion object {
