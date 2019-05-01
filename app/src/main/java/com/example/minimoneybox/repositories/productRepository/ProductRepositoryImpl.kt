@@ -22,7 +22,7 @@ class ProductRepositoryImpl(
             .flatMapSingle {
                 when (it) {
                     UserData.EMPTY -> Single.error(UserIsNotLoggedInException())
-                    else -> service.getInvestorProducts((it as UserData.User).bearerToken)
+                    else -> service.getInvestorProducts("Bearer ${(it as UserData.User).bearerToken}")
                 }
             }
 
@@ -30,7 +30,7 @@ class ProductRepositoryImpl(
                 ProductData.Product(
                     responseEntity.totalPlanValue,
                     responseEntity.productList.map {
-                        InvestorProductData(it.planValue, it.productDetailEntity.name, it.moneyBox)
+                        InvestorProductData(it.planValue, it.productDetailEntity.name, it.moneyBox, it.productDetailEntity.colour)
                     })
             }
     }

@@ -20,7 +20,11 @@ class LoginViewModel(
         disposables += userRepository.login(email, password, name)
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
-            .subscribe{t -> userData.postValue(t)}
+            .subscribe(
+                { t -> userData.postValue(t)},
+                {
+                    userData.postValue(UserData.EMPTY)
+                })
     }
 
     fun getUserData(): LiveData<UserData> = userData

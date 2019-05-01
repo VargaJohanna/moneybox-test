@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.minimoneybox.R
 import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.ext.show
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import org.koin.androidx.viewmodel.ext.viewModel
@@ -25,6 +26,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
+            observeUserData()
             setButtonClickListener(btn_sign_in)
         }
     }
@@ -34,20 +36,30 @@ class LoginFragment : Fragment() {
         setupAnimation()
     }
 
+    override fun onStop() {
+        pig_animation.setMinAndMaxFrame(firstAnim.first, secondAnim.second)
+        super.onStop()
+    }
+
     private fun setButtonClickListener(signInButton: Button) {
         signInButton.setOnClickListener {
             if (allFieldsValid()) {
                 loginViewModel.login(et_email.text.toString(), et_password.text.toString(), et_name.text.toString())
+                login_progress_bar.show(true)
+                pig_animation.pauseAnimation()
                 Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
-                navigate()
             }
         }
     }
 
-    private fun navigate() {
+    private fun observeUserData() {
         loginViewModel.getUserData().observe(requireActivity(), Observer {
+            login_progress_bar.show(false)
             if(it is UserData.User) findNavController().navigate(R.id.from_login_to_user_account)
-            else Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()
+            else {
+                Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()
+                pig_animation.playAnimation()
+            }
         })
     }
 
@@ -72,7 +84,7 @@ class LoginFragment : Fragment() {
             til_password.error = getString(R.string.password_error)
             false
         } else {
-            true
+            til_name.error == null //Send the login request only if the name error is not displayed
         }
     }
 

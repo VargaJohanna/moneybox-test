@@ -9,7 +9,7 @@ import io.reactivex.subjects.BehaviorSubject
 class UserRepositoryImpl(
     private val moneyBoxService: MoneyBoxService
 ) : UserRepository {
-    private val userSubject: BehaviorSubject<UserData> = BehaviorSubject.create()
+    private val userSubject: BehaviorSubject<UserData> = BehaviorSubject.createDefault(UserData.EMPTY)
 
     override fun login(email: String, password: String, name: String?): Single<UserData> {
         return moneyBoxService.login(
