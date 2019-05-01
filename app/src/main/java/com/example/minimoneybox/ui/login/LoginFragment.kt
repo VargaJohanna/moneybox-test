@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -26,7 +27,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
-            observeUserData()
+            observeUserData(login_progress_bar)
             setButtonClickListener(btn_sign_in)
         }
     }
@@ -52,9 +53,9 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun observeUserData() {
+    private fun observeUserData(progressbar: ProgressBar) {
         loginViewModel.getUserData().observe(requireActivity(), Observer {
-            login_progress_bar.show(false)
+            progressbar.show(false)
             if(it is UserData.User) findNavController().navigate(R.id.from_login_to_user_account)
             else {
                 Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()

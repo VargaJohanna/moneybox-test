@@ -57,11 +57,10 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
     private fun showTotalPlanValue(progressbar: ProgressBar) {
         userAccountViewModel.getTotalPlanValue().observe(requireActivity(), Observer {
             progressbar.show(false)
-            if (it != 0f) total_plan_value.text = it.toString()
+            if (it != 0f) total_plan_value.text = String.format(getString(R.string.total_plan_value), it.toString())
         })
     }
 
     override fun onItemClick(product: InvestorProductData) {
-
     }
 }
