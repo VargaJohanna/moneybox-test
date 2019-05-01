@@ -1,7 +1,10 @@
 package com.example.minimoneybox.user
 
-data class UserData (
-        val firstName: String,
-        val lastName: String,
+sealed class UserData {
+    object FAILED_AUTH : UserData()
+
+    data class User(
+        val name: String?,
         val bearerToken: String
-)
+    ) : UserData()
+}

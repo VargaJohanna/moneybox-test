@@ -32,7 +32,7 @@ dependencies {
     def constraint_layout_version = "1.1.3"
     def material_version = "1.0.0"
     def card_view_version = "1.0.0"
-    def rx_android_version = "2.0.1"
+    def rx_android_version = "2.1.1"
     def rx_java_version = "2.0.8"
     def junit_version = "4.12"
     def androidx_test_version = "1.1.1"
@@ -41,7 +41,7 @@ dependencies {
     def koin_core_version = "2.0.0-beta-1"
     def retrofit_version = "2.5.0"
     def lifecycle_version = "2.0.0"
-    def nav_version = "1.0.0-rc02"
+    def nav_version = "1.0.0"
     def lottie_version = "3.0.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -60,6 +60,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+
 
     //Espresso, junit
     testImplementation "junit:junit:$junit_version"

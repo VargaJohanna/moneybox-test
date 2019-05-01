@@ -1,43 +1,27 @@
 package com.example.minimoneybox.repositories
 
+import com.example.minimoneybox.network.AuthenticateBody
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.user.UserData
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import io.reactivex.Single
+import io.reactivex.subjects.BehaviorSubject
 
 class UserRepositoryImpl(
     private val moneyBoxService: MoneyBoxService
 ) : UserRepository {
-    private val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting().create()
+    private val userSubject: BehaviorSubject<UserData> = BehaviorSubject.create()
 
-    override fun login(email: String, password: String): Single<UserData> {
-        return moneyBoxService.authenticate(gsonBuilder.toJson(AuthenticateBody(email, password, "ANYTHING")))
+    override fun login(email: String, password: String, name: String?): Single<UserData> {
+        return moneyBoxService.login(AuthenticateBody(email, password, "ANYTHING"))
             .map {
-                UserData(it.User.FirstName, it.User.LastName, it.Session.BearerToken)
+                if(it.isSuccessful && it.body() != null) UserData.User(name, it.body()!!.session.bearerToken)
+                else UserData.FAILED_AUTH
             }
+            .doOnSuccess { userSubject.onNext(it) }
     }
 
-    override fun getUserData() {
-    }
+    override fun getUserData() = userSubject
 
     override fun clearUserData() {
     }
-
-    data class AuthenticationEntity(
-        val User: UserEntity,
-        val Session: SessionEntity
-    )
-
-    data class UserEntity(
-        val FirstName: String,
-        val LastName: String
-    )
-
-    data class SessionEntity(val BearerToken: String)
-    data class AuthenticateBody(
-        val Email: String,
-        val Password: String,
-        val Idfa: String
-    )
 }

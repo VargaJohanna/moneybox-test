@@ -11,12 +11,14 @@ import androidx.fragment.app.Fragment
 import com.example.minimoneybox.R
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
+import org.koin.androidx.viewmodel.ext.viewModel
 import java.util.regex.Pattern
 
 /**
  * A login screen that offers login via email/password.
  */
 class LoginFragment : Fragment() {
+    private val loginViewModel: LoginViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
@@ -32,6 +34,7 @@ class LoginFragment : Fragment() {
     private fun setButtonClickListener(signInButton: Button) {
         signInButton.setOnClickListener {
             if (allFieldsValid()) {
+                loginViewModel.login(et_email.text.toString(), et_password.text.toString(), et_name.text.toString())
                 Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_LONG).show()
             }
         }
