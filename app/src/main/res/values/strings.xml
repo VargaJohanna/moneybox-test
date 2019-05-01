@@ -13,4 +13,5 @@
     <string name="input_valid">Input is valid!</string>
     <string name="welcome_text">Hello %1$s!</string>
     <string name="total_plan_value">Total Plan Value: £%1$d</string>
+    <string name="please_login_again">Something went wrong. Please log in again.</string>
 </resources>

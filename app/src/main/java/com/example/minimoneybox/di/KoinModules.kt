@@ -2,11 +2,14 @@ package com.example.minimoneybox.di
 
 import com.example.minimoneybox.Constants
 import com.example.minimoneybox.network.MoneyBoxService
-import com.example.minimoneybox.repositories.UserRepository
-import com.example.minimoneybox.repositories.UserRepositoryImpl
+import com.example.minimoneybox.repositories.productRepository.ProductRepository
+import com.example.minimoneybox.repositories.productRepository.ProductRepositoryImpl
+import com.example.minimoneybox.repositories.userRepository.UserRepository
+import com.example.minimoneybox.repositories.userRepository.UserRepositoryImpl
 import com.example.minimoneybox.rx.RxSchedulers
 import com.example.minimoneybox.rx.SchedulersImpl
 import com.example.minimoneybox.ui.login.LoginViewModel
+import com.example.minimoneybox.ui.userAccount.UserAccountViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -17,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val repositoryModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }
+    single<ProductRepository> { ProductRepositoryImpl(get(), get()) }
 }
 
 val networkModule = module {
@@ -27,7 +31,7 @@ val networkModule = module {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder()
-            .addInterceptor (httpLoggingInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
             .build()
         client.interceptors()
         Retrofit.Builder()
@@ -41,6 +45,7 @@ val networkModule = module {
 
 val viewModelModule = module {
     viewModel { LoginViewModel(get(), get()) }
+    viewModel { UserAccountViewModel(get(), get(), get()) }
 }
 
 val schedulerModule = module {

@@ -1,4 +1,4 @@
-package com.example.minimoneybox.network
+package com.example.minimoneybox.network.authenticate
 
 import com.google.gson.annotations.SerializedName
 

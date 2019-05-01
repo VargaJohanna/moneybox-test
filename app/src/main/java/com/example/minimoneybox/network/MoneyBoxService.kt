@@ -1,10 +1,11 @@
 package com.example.minimoneybox.network
 
+import com.example.minimoneybox.network.authenticate.AuthenticateBody
+import com.example.minimoneybox.network.authenticate.AuthenticationEntity
+import com.example.minimoneybox.network.product.InvestorProductResponseEntity
 import io.reactivex.Single
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface MoneyBoxService {
     @Headers(
@@ -16,4 +17,7 @@ interface MoneyBoxService {
 
     @POST("/users/login")
     fun login(@Body request: AuthenticateBody): Single<Response<AuthenticationEntity>>
+
+    @GET("/investorproducts")
+    fun getInvestorProducts(@Header("Authorization") bearerToken: String?): Single<InvestorProductResponseEntity>
 }

@@ -1,6 +1,6 @@
-package com.example.minimoneybox.repositories
+package com.example.minimoneybox.repositories.userRepository
 
-import com.example.minimoneybox.user.UserData
+import com.example.minimoneybox.data.UserData
 import io.reactivex.Observable
 import io.reactivex.Single
 

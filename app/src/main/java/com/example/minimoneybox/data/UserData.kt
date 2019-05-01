@@ -1,7 +1,7 @@
-package com.example.minimoneybox.user
+package com.example.minimoneybox.data
 
 sealed class UserData {
-    object FAILED_AUTH : UserData()
+    object EMPTY : UserData()
 
     data class User(
         val name: String?,

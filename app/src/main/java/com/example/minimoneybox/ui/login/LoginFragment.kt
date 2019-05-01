@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.minimoneybox.R
+import com.example.minimoneybox.data.UserData
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import org.koin.androidx.viewmodel.ext.viewModel
@@ -35,9 +38,17 @@ class LoginFragment : Fragment() {
         signInButton.setOnClickListener {
             if (allFieldsValid()) {
                 loginViewModel.login(et_email.text.toString(), et_password.text.toString(), et_name.text.toString())
-                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
+                navigate()
             }
         }
+    }
+
+    private fun navigate() {
+        loginViewModel.getUserData().observe(requireActivity(), Observer {
+            if(it is UserData.User) findNavController().navigate(R.id.from_login_to_user_account)
+            else Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()
+        })
     }
 
     private fun allFieldsValid(): Boolean {
