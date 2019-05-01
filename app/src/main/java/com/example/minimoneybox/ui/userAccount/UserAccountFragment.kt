@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.minimoneybox.R
@@ -62,5 +63,6 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
     }
 
     override fun onItemClick(product: InvestorProductData) {
+        findNavController().navigate(R.id.from_userAccount_to_individualProduct)
     }
 }

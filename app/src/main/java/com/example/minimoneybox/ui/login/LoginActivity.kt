@@ -13,8 +13,4 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
     }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }

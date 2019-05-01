@@ -16,8 +16,21 @@
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
+
     <fragment android:id="@+id/userAccountFragment"
               android:name="com.example.minimoneybox.ui.userAccount.UserAccountFragment"
-              tools:layout="@layout/fragment_user_account"
-              android:label="UserAccountFragment"/>
+              android:label="UserAccountFragment"
+              tools:layout="@layout/fragment_user_account">
+        <action android:id="@+id/from_userAccount_to_individualProduct"
+                app:destination="@id/individualProductFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+
+    <fragment android:id="@+id/individualProductFragment"
+              android:name="com.example.minimoneybox.ui.individualProduct.IndividualProductFragment"
+              android:label="IndividualProductFragment"
+              tools:layout="@layout/fragment_individual_product"/>
 </navigation>
