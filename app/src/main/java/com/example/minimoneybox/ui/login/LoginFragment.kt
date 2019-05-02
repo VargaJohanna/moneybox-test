@@ -80,7 +80,11 @@ class LoginFragment : Fragment() {
      */
     private fun showErrorMessage() {
         loginViewModel.getErrorMessage().observe(this, Observer {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            if(!it.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.generic_error), Toast.LENGTH_LONG).show()
+            }
             login_progress_bar.show(false)
             pig_animation.playAnimation()
         })

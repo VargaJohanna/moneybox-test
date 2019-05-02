@@ -1,5 +1,6 @@
 package com.example.minimoneybox.ui.login
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +20,7 @@ class LoginViewModel(
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     /**
-     * Call the login request through the repository and turn the result into LiveData
+     * Call the login request through the repository and map the result to LiveData
      */
     fun login(email:String, password: String, name: String) {
         disposables += userRepository.login(email, password, name)
@@ -30,6 +31,8 @@ class LoginViewModel(
                 {
                     if (it is ServerException) {
                         errorMessage.postValue(it.errorMessage)
+                    } else {
+                        errorMessage.postValue("")
                     }
                 })
     }

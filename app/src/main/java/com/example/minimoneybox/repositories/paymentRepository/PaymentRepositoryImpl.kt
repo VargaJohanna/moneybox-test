@@ -26,10 +26,9 @@ class PaymentRepositoryImpl(
         return userRepository.getUserData()
             .flatMapSingle {
                 when (it) {
-                    // FIX???
                     UserData.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                     else -> service.payOneOffPayment(
-                        "Bearer ${(it as UserData.User).bearerToken}",
+                        "Bearer ${(it as UserData.User).bearerToken}9",
                         OneOffPaymentBody(amount, productId)
                     )
                 }
