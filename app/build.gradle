@@ -43,6 +43,9 @@ dependencies {
     def lifecycle_version = "2.0.0"
     def nav_version = "1.0.0"
     def lottie_version = "3.0.0"
+    def mockito_core_version = "2.15.0"
+    def mockito_kotlin_version = "2.1.0"
+    def assertj_core_version = "3.12.2"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -88,4 +91,14 @@ dependencies {
 
     //Lottie animation
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    //Mockito
+    testImplementation "org.mockito:mockito-core:$mockito_core_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+    testImplementation "org.assertj:assertj-core:$assertj_core_version"
+
+    // https://mvnrepository.com/artifact/org.json/json
+    testImplementation group: 'org.json', name: 'json', version: '20090211'
+
 }

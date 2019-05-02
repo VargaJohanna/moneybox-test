@@ -34,7 +34,8 @@ class LoginViewModel(
                     } else {
                         errorMessage.postValue("")
                     }
-                })
+                }
+            )
     }
     fun resetUserData() {
         userData.postValue(UserData.EMPTY)

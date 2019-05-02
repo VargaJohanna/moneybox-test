@@ -1,6 +1,6 @@
 package com.example.minimoneybox.customException
 
-class ServerException(
+data class ServerException(
     val name: String,
     val errorMessage: String
 ) : Exception()
