@@ -3,21 +3,21 @@ package com.example.minimoneybox.ui.userAccount
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.minimoneybox.customException.UserIsNotLoggedInException
+import com.example.minimoneybox.customException.ServerException
 import com.example.minimoneybox.data.InvestorProductData
 import com.example.minimoneybox.data.ProductData
 import com.example.minimoneybox.data.UserData
 import com.example.minimoneybox.ext.plusAssign
 import com.example.minimoneybox.repositories.productRepository.ProductRepository
-import com.example.minimoneybox.repositories.userRepository.UserRepository
+import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.example.minimoneybox.rx.RxSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
 /**
- * The UserAccountViewModel will get all the neccessary data from the repositories and streams them to the fragment through LiveData
+ * The UserAccountViewModel will get all the necessary data from the repositories and streams them to the fragment through LiveData
  */
 class UserAccountViewModel(
-    private val userRepository: UserRepository,
+    private val userRepository: UserAccountRepository,
     private val productRepository: ProductRepository,
     private val rxSchedulers: RxSchedulers
 ) : ViewModel() {
@@ -26,6 +26,7 @@ class UserAccountViewModel(
     private val productList: MutableLiveData<List<InvestorProductData>> = MutableLiveData()
     private val totalPlanValue: MutableLiveData<Float> = MutableLiveData()
     private val isUserLoggedIn: MutableLiveData<Boolean> = MutableLiveData()
+    private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     init {
         observeUserData()
@@ -53,18 +54,25 @@ class UserAccountViewModel(
                     it as ProductData.Product
                     totalPlanValue.postValue(it.totalPlanValue)
                     productList.postValue(it.productList)
-                    isUserLoggedIn.postValue(true)
                 },
                 {
-                    if (it is UserIsNotLoggedInException) isUserLoggedIn.postValue(false)
+                    if (it is ServerException) {
+                        errorMessage.postValue(it.errorMessage)
+                        isUserLoggedIn.postValue(false)
+                    }
                 }
             )
+    }
+
+    fun clearData() {
+        userRepository.clearUserData()
     }
 
     fun getName(): LiveData<String> = name
     fun getProductList(): LiveData<List<InvestorProductData>> = productList
     fun isUserLoggedIn(): LiveData<Boolean> = isUserLoggedIn
     fun getTotalPlanValue(): LiveData<Float> = totalPlanValue
+    fun getErrorMessage(): LiveData<String> = errorMessage
 
     override fun onCleared() {
         disposables.clear()

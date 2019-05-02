@@ -3,20 +3,20 @@ package com.example.minimoneybox.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.minimoneybox.customException.IncorrectLoginException
+import com.example.minimoneybox.customException.ServerException
 import com.example.minimoneybox.data.UserData
 import com.example.minimoneybox.ext.plusAssign
-import com.example.minimoneybox.repositories.userRepository.UserRepository
+import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.example.minimoneybox.rx.RxSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
 class LoginViewModel(
-    private val userRepository: UserRepository,
+    private val userRepository: UserAccountRepository,
     private val rxSchedulers: RxSchedulers
 ): ViewModel() {
     private val disposables = CompositeDisposable()
     private val userData: MutableLiveData<UserData> = MutableLiveData()
-    private val showIncorrectLogin: MutableLiveData<Boolean> = MutableLiveData()
+    private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     /**
      * Call the login request through the repository and turn the result into LiveData
@@ -28,16 +28,14 @@ class LoginViewModel(
             .subscribe(
                 { t -> userData.postValue(t)},
                 {
-                    if(it is IncorrectLoginException) {
-                        showIncorrectLogin.postValue(true)
-                    } else {
-                        userData.postValue(UserData.EMPTY)
+                    if (it is ServerException) {
+                        errorMessage.postValue(it.errorMessage)
                     }
                 })
     }
 
     fun getUserData(): LiveData<UserData> = userData
-    fun showInCorrectLogin(): LiveData<Boolean> = showIncorrectLogin
+    fun getErrorMessage(): LiveData<String> = errorMessage
 
     override fun onCleared() {
         disposables.clear()

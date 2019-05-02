@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,8 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
             showTotalPlanValue(account_progress_bar)
             generateProductList(adapter, account_recycler_view)
             displayProductList(adapter, account_progress_bar)
+            showErrorMessage()
+            clearUserData()
         }
     }
 
@@ -71,5 +74,25 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
             product.moneyBoxValue.toString()
         )
         findNavController().navigate(action)
+    }
+
+    /**
+     * Observe the error message and show the returned text in a toast
+     */
+    private fun showErrorMessage() {
+        userAccountViewModel.getErrorMessage().observe(this, Observer {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    /**
+     * When the UserData is Empty then clear the data and force the user to login again
+     */
+    private fun clearUserData() {
+        userAccountViewModel.isUserLoggedIn().observe(this, Observer {
+            if (!it) {
+                userAccountViewModel.clearData()
+            }
+        })
     }
 }

@@ -1,5 +1,5 @@
 package com.example.minimoneybox.data
 
-data class MoneyboxData (
+data class MoneyboxData(
     val moneyboxValue: Int
 )

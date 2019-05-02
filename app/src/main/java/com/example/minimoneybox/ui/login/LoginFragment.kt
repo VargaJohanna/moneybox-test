@@ -29,7 +29,7 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
             observeUserData(login_progress_bar)
             setButtonClickListener(btn_sign_in)
-            showIncorrectLoginMessage()
+            showErrorMessage()
         }
     }
 
@@ -61,7 +61,7 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * When the UserData.User is returned then navigate to the next screen.
+     * When UserData.User is returned then navigate to the next screen.
      * When UserData.EMPTY is returned then show an error message
      */
     private fun observeUserData(progressbar: ProgressBar) {
@@ -69,7 +69,7 @@ class LoginFragment : Fragment() {
             if(it is UserData.User) {
                 findNavController().navigate(R.id.from_login_to_user_account)
             } else if (it is UserData.EMPTY) {
-                Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), R.string.generic_error, Toast.LENGTH_SHORT).show()
             }
             progressbar.show(false)
             pig_animation.playAnimation()
@@ -77,15 +77,14 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * When login returns 401 error then show a specific message
+     * Observe the error message and show the returned text in a toast
      */
-    private fun showIncorrectLoginMessage() {
-        loginViewModel.showInCorrectLogin().observe(this, Observer {
-            if(it) {
-                Toast.makeText(requireContext(), "Wrong email or password!", Toast.LENGTH_SHORT).show()
-                login_progress_bar.show(false)
-                pig_animation.playAnimation()
-            }
+    private fun showErrorMessage() {
+        loginViewModel.getErrorMessage().observe(this, Observer {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            login_progress_bar.show(false)
+            pig_animation.playAnimation()
+
         })
     }
 

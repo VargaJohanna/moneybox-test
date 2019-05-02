@@ -1,37 +1,50 @@
 package com.example.minimoneybox.repositories.paymentRepository
 
-import com.example.minimoneybox.customException.ErrorWithPaymentException
-import com.example.minimoneybox.customException.UserIsNotLoggedInException
+import android.content.res.Resources
+import com.example.minimoneybox.R
+import com.example.minimoneybox.customException.ServerException
 import com.example.minimoneybox.data.MoneyboxData
 import com.example.minimoneybox.data.UserData
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.payment.OneOffPaymentBody
-import com.example.minimoneybox.repositories.userRepository.UserRepository
+import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import io.reactivex.Observable
 import io.reactivex.Single
+import okhttp3.ResponseBody
+import org.json.JSONObject
 
 class PaymentRepositoryImpl(
     private val service: MoneyBoxService,
-    private val userRepository: UserRepository
+    private val userRepository: UserAccountRepository
 
-): PaymentRepository {
-
-    override fun payMoneybox( productId: Int, amount: Int) : Observable<MoneyboxData> {
+) : PaymentRepository {
+    /**
+     * Get the user data and if it's not empty then send the payment request with the returned token.
+     * Then map teh response into a MoneyboxData.
+     */
+    override fun payMoneybox(productId: Int, amount: Int): Observable<MoneyboxData> {
         return userRepository.getUserData()
             .flatMapSingle {
                 when (it) {
-                    UserData.EMPTY -> Single.error(UserIsNotLoggedInException())
+                    UserData.EMPTY -> Single.error(ServerException("Session has expired"))
                     else -> service.payOneOffPayment(
                         "Bearer ${(it as UserData.User).bearerToken}",
                         OneOffPaymentBody(amount, productId)
                     )
                 }
-            }.flatMap {
-                if(it.isSuccessful && it.body() != null) {
-                    Observable.just(MoneyboxData(it.body()!!.moneyBoxNewValue))
+            }.flatMap { response ->
+                if (response.isSuccessful && response.body() != null) {
+                    Observable.just(MoneyboxData(response.body()!!.moneyBoxNewValue))
+                } else if (response.errorBody() != null) {
+                    generateError(response.errorBody()!!)
                 } else {
-                    Observable.error(ErrorWithPaymentException())
+                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error)))
                 }
             }
+    }
+
+    private fun generateError(response: ResponseBody): Observable<MoneyboxData> {
+        val jsonObjectError = JSONObject(response.string())
+        return Observable.error(ServerException(jsonObjectError.getString("Message")))
     }
 }

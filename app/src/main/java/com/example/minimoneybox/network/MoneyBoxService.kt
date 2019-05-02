@@ -26,7 +26,7 @@ interface MoneyBoxService {
         "apiVersion: 3.0.0"
     )
     @GET("/investorproducts")
-    fun getInvestorProducts(@Header("Authorization") bearerToken: String?): Single<InvestorProductResponseEntity>
+    fun getInvestorProducts(@Header("Authorization") bearerToken: String?): Single<Response<InvestorProductResponseEntity>>
 
     @Headers(
         "AppId: 3a97b932a9d449c981b595",
@@ -35,7 +35,8 @@ interface MoneyBoxService {
         "apiVersion: 3.0.0"
     )
     @POST("/oneoffpayments")
-    fun payOneOffPayment(@Header("Authorization") bearerToken: String?,
-                         @Body request: OneOffPaymentBody
+    fun payOneOffPayment(
+        @Header("Authorization") bearerToken: String?,
+        @Body request: OneOffPaymentBody
     ): Single<Response<MoneyboxEntity>>
 }

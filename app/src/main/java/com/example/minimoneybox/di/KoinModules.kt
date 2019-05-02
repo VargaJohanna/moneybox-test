@@ -6,8 +6,8 @@ import com.example.minimoneybox.repositories.paymentRepository.PaymentRepository
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepositoryImpl
 import com.example.minimoneybox.repositories.productRepository.ProductRepository
 import com.example.minimoneybox.repositories.productRepository.ProductRepositoryImpl
-import com.example.minimoneybox.repositories.userRepository.UserRepository
-import com.example.minimoneybox.repositories.userRepository.UserRepositoryImpl
+import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
+import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepositoryImpl
 import com.example.minimoneybox.rx.RxSchedulers
 import com.example.minimoneybox.rx.SchedulersImpl
 import com.example.minimoneybox.ui.individualProduct.IndividualProductViewModel
@@ -22,7 +22,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 val repositoryModule = module {
-    single<UserRepository> { UserRepositoryImpl(get()) }
+    single<UserAccountRepository> { UserAccountRepositoryImpl(get()) }
     single<ProductRepository> { ProductRepositoryImpl(get(), get()) }
     single<PaymentRepository> { PaymentRepositoryImpl(get(), get()) }
 }

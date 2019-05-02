@@ -3,6 +3,7 @@ package com.example.minimoneybox.ui.individualProduct
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.minimoneybox.customException.ServerException
 import com.example.minimoneybox.ext.plusAssign
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepository
 import com.example.minimoneybox.rx.RxSchedulers
@@ -15,22 +16,24 @@ class IndividualProductViewModel(
 ) : ViewModel() {
     private val disposables = CompositeDisposable()
     private val moneyboxValue: MutableLiveData<Int> = MutableLiveData()
-    private val paymentError: MutableLiveData<Boolean> = MutableLiveData()
+    private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     fun payMoneybox(amount: Int) {
         disposables += paymentRepository.payMoneybox(productId = productId, amount = amount)
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
             .subscribe(
-                { moneyboxValue.postValue(it.moneyboxValue)},
+                { moneyboxValue.postValue(it.moneyboxValue) },
                 {
-                    paymentError.postValue(true)
+                    if (it is ServerException) {
+                        errorMessage.postValue(it.errorMessage)
+                    }
                 }
             )
     }
 
     fun getMoneyboxValue(): LiveData<Int> = moneyboxValue
-    fun getPaymentError(): LiveData<Boolean> = paymentError
+    fun getErrorMessage(): LiveData<String> = errorMessage
 
     override fun onCleared() {
         disposables.clear()

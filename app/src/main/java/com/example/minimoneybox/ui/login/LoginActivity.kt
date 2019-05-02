@@ -20,7 +20,8 @@ class LoginActivity : AppCompatActivity() {
      * On other screens the navigation component will handle the back press
      */
     override fun onBackPressed() {
-        val onUserAccountScreen = findNavController(R.id.login_nav_host_fragment).currentDestination?.id == R.id.userAccountFragment
+        val onUserAccountScreen =
+            findNavController(R.id.login_nav_host_fragment).currentDestination?.id == R.id.userAccountFragment
 
         if (onUserAccountScreen) {
             finish()
