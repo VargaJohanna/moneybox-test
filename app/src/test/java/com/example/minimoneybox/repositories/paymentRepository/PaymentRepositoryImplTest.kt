@@ -36,11 +36,11 @@ class PaymentRepositoryImplTest {
         val paymentRepository = givenPaymentRepositorySuccess()
 
         //When
-        val testObserver = paymentRepository.payMoneybox(1, 10).test()
+        val testObserver = paymentRepository.payMoneybox(1, 10f).test()
 
         //Then
         testObserver.assertValue {
-            it.moneyboxValue == 100
+            it.moneyboxValue == 100f
         }
             .assertNoErrors()
             .dispose()
@@ -52,7 +52,7 @@ class PaymentRepositoryImplTest {
         val paymentRepository = givenPaymentRepositoryExpiredToken()
 
         //When
-        val testObserver = paymentRepository.payMoneybox(1, 10).test()
+        val testObserver = paymentRepository.payMoneybox(1, 10f).test()
 
         //Then
         val serverException =

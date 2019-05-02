@@ -4,5 +4,5 @@ import com.example.minimoneybox.data.MoneyboxData
 import io.reactivex.Observable
 
 interface PaymentRepository {
-    fun payMoneybox(productId: Int, amount: Int): Observable<MoneyboxData>
+    fun payMoneybox(productId: Int, amount: Float): Observable<MoneyboxData>
 }

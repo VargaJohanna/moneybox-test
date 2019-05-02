@@ -29,10 +29,10 @@ class IndividualProductViewModelTest {
         val individualProductViewModel = givenIndividualProductViewModel()
 
         //When
-        individualProductViewModel.payMoneybox(10)
+        individualProductViewModel.payMoneybox(10f)
 
         //Then
-        verify(paymentRepository).payMoneybox(1, 10)
+        verify(paymentRepository).payMoneybox(1, 10f)
     }
 
     @Test
@@ -51,20 +51,20 @@ class IndividualProductViewModelTest {
     fun `should get the moneybox value when getMoneyboxValue() is called`() {
         //Given
         val individualProductViewModel = givenIndividualProductViewModel()
-        individualProductViewModel.payMoneybox(10)
+        individualProductViewModel.payMoneybox(10f)
 
         //When
         individualProductViewModel.getMoneyboxValue().observeForever(mock())
 
         //Then
-        assertEquals(20, individualProductViewModel.getMoneyboxValue().value)
+        assertEquals(20f, individualProductViewModel.getMoneyboxValue().value)
     }
 
     @Test
     fun `should get the error message when getErrorMessage() is called and payMoneybox returned an error`() {
         //Given
         val individualProductViewModel = givenIndividualProductViewModelWithError()
-        individualProductViewModel.payMoneybox(10)
+        individualProductViewModel.payMoneybox(10f)
 
         //When
         individualProductViewModel.getErrorMessage().observeForever(mock())
@@ -80,7 +80,7 @@ class IndividualProductViewModelTest {
     fun `logoutUser should be true when the token is expired`() {
         //Given
         val individualProductViewModel = givenIndividualProductViewModelWithError()
-        individualProductViewModel.payMoneybox(10)
+        individualProductViewModel.payMoneybox(10f)
 
         //When
         individualProductViewModel.logoutUser().observeForever(mock())
@@ -90,7 +90,7 @@ class IndividualProductViewModelTest {
     }
 
     private fun givenIndividualProductViewModel(): IndividualProductViewModel {
-        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Observable.just(MoneyboxData(20)))
+        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Observable.just(MoneyboxData(20f)))
         return IndividualProductViewModel(1, paymentRepository, TestScheduler(), useRepository)
     }
 

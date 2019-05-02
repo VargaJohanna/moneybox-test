@@ -18,11 +18,11 @@ class IndividualProductViewModel(
 
     ) : ViewModel() {
     private val disposables = CompositeDisposable()
-    private val moneyboxValue: MutableLiveData<Int> = MutableLiveData()
+    private val moneyboxValue: MutableLiveData<Float> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
     private val logoutUser: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun payMoneybox(amount: Int) {
+    fun payMoneybox(amount: Float) {
         disposables += paymentRepository.payMoneybox(productId = productId, amount = amount)
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
@@ -43,7 +43,7 @@ class IndividualProductViewModel(
         userRepository.clearUserData()
     }
 
-    fun getMoneyboxValue(): LiveData<Int> = moneyboxValue
+    fun getMoneyboxValue(): LiveData<Float> = moneyboxValue
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun logoutUser(): LiveData<Boolean> = logoutUser
 

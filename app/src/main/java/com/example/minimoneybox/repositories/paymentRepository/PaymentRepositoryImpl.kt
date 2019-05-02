@@ -22,7 +22,7 @@ class PaymentRepositoryImpl(
      * Get the user data and if it's not empty then send the payment request with the returned token.
      * Then map teh response into a MoneyboxData.
      */
-    override fun payMoneybox(productId: Int, amount: Int): Observable<MoneyboxData> {
+    override fun payMoneybox(productId: Int, amount: Float): Observable<MoneyboxData> {
         return userRepository.getUserData()
             .flatMapSingle {
                 when (it) {
@@ -34,7 +34,7 @@ class PaymentRepositoryImpl(
                 }
             }.flatMap { response ->
                 if (response.isSuccessful && response.body() != null) {
-                    Observable.just(MoneyboxData(response.body()!!.moneyBoxNewValue))
+                    Observable.just(MoneyboxData(response.body()!!.moneyBoxNewValue.toFloat()))
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {

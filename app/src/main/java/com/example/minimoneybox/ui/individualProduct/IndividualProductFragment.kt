@@ -41,7 +41,7 @@ class IndividualProductFragment : Fragment() {
     private fun addButtonListener(button: Button, progressBar: ProgressBar) {
         button.setOnClickListener {
             progressBar.show(true)
-            productViewModel.payMoneybox(10)
+            productViewModel.payMoneybox(10f)
         }
     }
 
