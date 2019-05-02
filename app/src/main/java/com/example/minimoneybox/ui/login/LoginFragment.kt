@@ -68,9 +68,10 @@ class LoginFragment : Fragment() {
         loginViewModel.getUserData().observe(this, Observer {
             if(it is UserData.User) {
                 findNavController().navigate(R.id.from_login_to_user_account)
+            } else {
+                progressbar.show(false)
+                pig_animation.playAnimation()
             }
-            progressbar.show(false)
-            pig_animation.playAnimation()
         })
     }
 
@@ -82,7 +83,6 @@ class LoginFragment : Fragment() {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             login_progress_bar.show(false)
             pig_animation.playAnimation()
-
         })
     }
 

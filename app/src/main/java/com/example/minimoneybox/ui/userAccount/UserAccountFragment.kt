@@ -26,8 +26,8 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
         val adapter = ProductAdapter(ArrayList(), this)
         return inflater.inflate(R.layout.fragment_user_account, container, false).apply {
             userAccountViewModel.observeProductList()
-            showName(account_progress_bar)
-            showTotalPlanValue(account_progress_bar)
+            showName()
+            showTotalPlanValue()
             generateProductList(adapter, account_recycler_view)
             displayProductList(adapter, account_progress_bar)
             showErrorMessage()
@@ -50,19 +50,17 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
         })
     }
 
-    private fun showName(progressbar: ProgressBar) {
+    private fun showName() {
         userAccountViewModel.getName().observe(this, Observer {
             if (it.isNotEmpty()) {
-                progressbar.show(false)
                 user_name.display(true)
                 user_name.text = String.format(getString(R.string.welcome_text), it)
             }
         })
     }
 
-    private fun showTotalPlanValue(progressbar: ProgressBar) {
+    private fun showTotalPlanValue() {
         userAccountViewModel.getTotalPlanValue().observe(this, Observer {
-            progressbar.show(false)
             if (it != 0f) total_plan_value.text = String.format(getString(R.string.total_plan_value), it.toString())
         })
     }
