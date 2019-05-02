@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.example.minimoneybox.R
+import com.example.minimoneybox.ext.restart
 import kotlinx.android.synthetic.main.fragment_individual_product.view.*
 import org.koin.androidx.viewmodel.ext.viewModel
 import org.koin.core.parameter.parametersOf
+
 
 class IndividualProductFragment : Fragment() {
     private val args: IndividualProductFragmentArgs by navArgs()
@@ -30,6 +32,7 @@ class IndividualProductFragment : Fragment() {
             addButtonListener(add_money_button)
             observeMoneyBoxValue(individual_moneybox_value)
             showErrorMessage()
+            logoutUser()
         }
     }
 
@@ -50,7 +53,19 @@ class IndividualProductFragment : Fragment() {
      */
     private fun showErrorMessage() {
         productViewModel.getErrorMessage().observe(this, Observer {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        })
+    }
+
+    /**
+     * When the session expired then clear the data and force the user to login again
+     */
+    private fun logoutUser() {
+        productViewModel.logoutUser().observe(this, Observer {
+            if (it) {
+                productViewModel.clearData()
+                requireActivity().restart()
+            }
         })
     }
 

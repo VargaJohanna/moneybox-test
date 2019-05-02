@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.minimoneybox.R
 import com.example.minimoneybox.data.InvestorProductData
 import com.example.minimoneybox.ext.display
+import com.example.minimoneybox.ext.restart
 import com.example.minimoneybox.ext.show
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.fragment_user_account.view.*
@@ -30,7 +31,7 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
             generateProductList(adapter, account_recycler_view)
             displayProductList(adapter, account_progress_bar)
             showErrorMessage()
-            clearUserData()
+            logoutUser()
         }
     }
 
@@ -81,17 +82,18 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
      */
     private fun showErrorMessage() {
         userAccountViewModel.getErrorMessage().observe(this, Observer {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         })
     }
 
     /**
-     * When the UserData is Empty then clear the data and force the user to login again
+     * When the session expired then clear the data and force the user to login again
      */
-    private fun clearUserData() {
-        userAccountViewModel.isUserLoggedIn().observe(this, Observer {
-            if (!it) {
+    private fun logoutUser() {
+        userAccountViewModel.logoutUser().observe(this, Observer {
+            if (it) {
                 userAccountViewModel.clearData()
+                requireActivity().restart()
             }
         })
     }

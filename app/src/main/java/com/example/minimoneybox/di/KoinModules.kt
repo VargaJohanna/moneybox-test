@@ -50,7 +50,7 @@ val networkModule = module {
 val viewModelModule = module {
     viewModel { LoginViewModel(get(), get()) }
     viewModel { UserAccountViewModel(get(), get(), get()) }
-    viewModel { (productId: Int) -> IndividualProductViewModel(productId, get(), get()) }
+    viewModel { (productId: Int) -> IndividualProductViewModel(productId, get(), get(), get()) }
 }
 
 val schedulerModule = module {

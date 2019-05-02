@@ -33,7 +33,9 @@ class LoginViewModel(
                     }
                 })
     }
-
+    fun resetUserData() {
+        userData.postValue(UserData.EMPTY)
+    }
     fun getUserData(): LiveData<UserData> = userData
     fun getErrorMessage(): LiveData<String> = errorMessage
 

@@ -5,5 +5,4 @@ import io.reactivex.Observable
 
 interface ProductRepository {
     fun fetchInvestorProducts(): Observable<ProductData>
-    fun getCachedProduct(): Observable<ProductData>
 }

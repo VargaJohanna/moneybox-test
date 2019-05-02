@@ -19,8 +19,6 @@ class ProductRepositoryImpl(
     private val userRepository: UserAccountRepository
 ) : ProductRepository {
 
-    private val productSubject: BehaviorSubject<ProductData> = BehaviorSubject.create()
-
     /**
      * Get the user data and if it's not empty then fetch the investor products with the returned token.
      * Then map the response into a Product data class
@@ -29,7 +27,7 @@ class ProductRepositoryImpl(
         return userRepository.getUserData()
             .flatMapSingle {
                 when (it) {
-                    UserData.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error)))
+                    UserData.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                     else -> service.getInvestorProducts("Bearer ${(it as UserData.User).bearerToken}")
                 }
             }
@@ -51,15 +49,13 @@ class ProductRepositoryImpl(
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error)))
+                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                 }
             }
     }
 
     private fun generateError(response: ResponseBody): Observable<ProductData> {
         val jsonObjectError = JSONObject(response.string())
-        return Observable.error(ServerException(jsonObjectError.getString("Message")))
+        return Observable.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
     }
-
-    override fun getCachedProduct(): Observable<ProductData> = productSubject
 }

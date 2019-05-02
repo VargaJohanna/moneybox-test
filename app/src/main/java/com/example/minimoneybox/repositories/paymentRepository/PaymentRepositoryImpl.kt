@@ -26,7 +26,8 @@ class PaymentRepositoryImpl(
         return userRepository.getUserData()
             .flatMapSingle {
                 when (it) {
-                    UserData.EMPTY -> Single.error(ServerException("Session has expired"))
+                    // FIX???
+                    UserData.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                     else -> service.payOneOffPayment(
                         "Bearer ${(it as UserData.User).bearerToken}",
                         OneOffPaymentBody(amount, productId)
@@ -38,13 +39,13 @@ class PaymentRepositoryImpl(
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error)))
+                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                 }
             }
     }
 
     private fun generateError(response: ResponseBody): Observable<MoneyboxData> {
         val jsonObjectError = JSONObject(response.string())
-        return Observable.error(ServerException(jsonObjectError.getString("Message")))
+        return Observable.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
     }
 }

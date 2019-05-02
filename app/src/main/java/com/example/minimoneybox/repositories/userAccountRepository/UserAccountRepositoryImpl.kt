@@ -30,7 +30,7 @@ class UserAccountRepositoryImpl(
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error)))
+                    Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                 }
             }
             .doOnSuccess { userSubject.onNext(it) }
@@ -38,7 +38,7 @@ class UserAccountRepositoryImpl(
 
     private fun generateError(response: ResponseBody): Single<UserData> {
         val jsonObjectError = JSONObject(response.string())
-        return Single.error(ServerException(jsonObjectError.getString("Message")))
+        return Single.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
     }
 
     override fun getUserData() = userSubject

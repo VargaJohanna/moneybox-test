@@ -26,6 +26,7 @@ class LoginFragment : Fragment() {
     private val loginViewModel: LoginViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        loginViewModel.resetUserData()
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
             observeUserData(login_progress_bar)
             setButtonClickListener(btn_sign_in)
@@ -55,21 +56,18 @@ class LoginFragment : Fragment() {
                 loginViewModel.login(et_email.text.toString(), et_password.text.toString(), et_name.text.toString())
                 login_progress_bar.show(true)
                 pig_animation.pauseAnimation()
-                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     /**
      * When UserData.User is returned then navigate to the next screen.
-     * When UserData.EMPTY is returned then show an error message
      */
     private fun observeUserData(progressbar: ProgressBar) {
         loginViewModel.getUserData().observe(this, Observer {
             if(it is UserData.User) {
                 findNavController().navigate(R.id.from_login_to_user_account)
-            } else if (it is UserData.EMPTY) {
-                Toast.makeText(requireContext(), R.string.generic_error, Toast.LENGTH_SHORT).show()
             }
             progressbar.show(false)
             pig_animation.playAnimation()
@@ -81,7 +79,7 @@ class LoginFragment : Fragment() {
      */
     private fun showErrorMessage() {
         loginViewModel.getErrorMessage().observe(this, Observer {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             login_progress_bar.show(false)
             pig_animation.playAnimation()
 

@@ -14,8 +14,10 @@
     <string name="welcome_text">Hello %1$s!</string>
     <string name="total_plan_value">Total Plan Value: £%1$s</string>
     <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="generic_error_name">Generic Error</string>
     <string name="product_plan_value">Plan Value: £%1$s</string>
     <string name="product_moneybox_value">Moneybox: £%1$s</string>
     <string name="add_10_button">Add £10</string>
     <string name="error_try_again">We\'re sorry but something went wrong. Please try again.</string>
+    <string name="server_session_expired_name">Bearer token expired</string>
 </resources>

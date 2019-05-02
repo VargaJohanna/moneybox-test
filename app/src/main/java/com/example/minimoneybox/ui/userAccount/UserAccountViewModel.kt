@@ -1,5 +1,6 @@
 package com.example.minimoneybox.ui.userAccount
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,7 @@ class UserAccountViewModel(
     private val name: MutableLiveData<String> = MutableLiveData()
     private val productList: MutableLiveData<List<InvestorProductData>> = MutableLiveData()
     private val totalPlanValue: MutableLiveData<Float> = MutableLiveData()
-    private val isUserLoggedIn: MutableLiveData<Boolean> = MutableLiveData()
+    private val logoutUser: MutableLiveData<Boolean> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     init {
@@ -39,8 +40,6 @@ class UserAccountViewModel(
             .subscribe {
                 if (it is UserData.User) {
                     name.postValue(it.name)
-                } else {
-                    isUserLoggedIn.postValue(false)
                 }
             }
     }
@@ -57,8 +56,10 @@ class UserAccountViewModel(
                 },
                 {
                     if (it is ServerException) {
+                        if(it.name == "Bearer token expired" || it.name == "User session not found") {
+                            logoutUser.postValue(true)
+                        }
                         errorMessage.postValue(it.errorMessage)
-                        isUserLoggedIn.postValue(false)
                     }
                 }
             )
@@ -70,7 +71,7 @@ class UserAccountViewModel(
 
     fun getName(): LiveData<String> = name
     fun getProductList(): LiveData<List<InvestorProductData>> = productList
-    fun isUserLoggedIn(): LiveData<Boolean> = isUserLoggedIn
+    fun logoutUser(): LiveData<Boolean> = logoutUser
     fun getTotalPlanValue(): LiveData<Float> = totalPlanValue
     fun getErrorMessage(): LiveData<String> = errorMessage
 
