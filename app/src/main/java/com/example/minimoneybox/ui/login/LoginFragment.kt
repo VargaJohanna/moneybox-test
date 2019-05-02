@@ -29,6 +29,7 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false).apply {
             observeUserData(login_progress_bar)
             setButtonClickListener(btn_sign_in)
+            showIncorrectLoginMessage()
         }
     }
 
@@ -37,11 +38,17 @@ class LoginFragment : Fragment() {
         setupAnimation()
     }
 
+    /**
+     * Reset animation onStop so tha app won't crash when it's in the background
+     */
     override fun onStop() {
         pig_animation.setMinAndMaxFrame(firstAnim.first, secondAnim.second)
         super.onStop()
     }
 
+    /**
+     * Send the login request when all fields are valid
+     */
     private fun setButtonClickListener(signInButton: Button) {
         signInButton.setOnClickListener {
             if (allFieldsValid()) {
@@ -53,12 +60,30 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * When the UserData.User is returned then navigate to the next screen.
+     * When UserData.EMPTY is returned then show an error message
+     */
     private fun observeUserData(progressbar: ProgressBar) {
-        loginViewModel.getUserData().observe(requireActivity(), Observer {
-            progressbar.show(false)
-            if(it is UserData.User) findNavController().navigate(R.id.from_login_to_user_account)
-            else {
+        loginViewModel.getUserData().observe(this, Observer {
+            if(it is UserData.User) {
+                findNavController().navigate(R.id.from_login_to_user_account)
+            } else if (it is UserData.EMPTY) {
                 Toast.makeText(requireContext(), R.string.please_login_again, Toast.LENGTH_LONG).show()
+            }
+            progressbar.show(false)
+            pig_animation.playAnimation()
+        })
+    }
+
+    /**
+     * When login returns 401 error then show a specific message
+     */
+    private fun showIncorrectLoginMessage() {
+        loginViewModel.showInCorrectLogin().observe(this, Observer {
+            if(it) {
+                Toast.makeText(requireContext(), "Wrong email or password!", Toast.LENGTH_SHORT).show()
+                login_progress_bar.show(false)
                 pig_animation.playAnimation()
             }
         })

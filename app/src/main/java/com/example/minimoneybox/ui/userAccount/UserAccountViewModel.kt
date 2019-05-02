@@ -3,7 +3,7 @@ package com.example.minimoneybox.ui.userAccount
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.minimoneybox.UserIsNotLoggedInException
+import com.example.minimoneybox.customException.UserIsNotLoggedInException
 import com.example.minimoneybox.data.InvestorProductData
 import com.example.minimoneybox.data.ProductData
 import com.example.minimoneybox.data.UserData
@@ -13,6 +13,9 @@ import com.example.minimoneybox.repositories.userRepository.UserRepository
 import com.example.minimoneybox.rx.RxSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
+/**
+ * The UserAccountViewModel will get all the neccessary data from the repositories and streams them to the fragment through LiveData
+ */
 class UserAccountViewModel(
     private val userRepository: UserRepository,
     private val productRepository: ProductRepository,
@@ -26,7 +29,6 @@ class UserAccountViewModel(
 
     init {
         observeUserData()
-        observeProductList()
     }
 
     private fun observeUserData() {
@@ -34,12 +36,15 @@ class UserAccountViewModel(
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
             .subscribe {
-                it as UserData.User
-                name.postValue(it.name)
+                if (it is UserData.User) {
+                    name.postValue(it.name)
+                } else {
+                    isUserLoggedIn.postValue(false)
+                }
             }
     }
 
-    private fun observeProductList() {
+    fun observeProductList() {
         disposables += productRepository.fetchInvestorProducts()
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
@@ -60,4 +65,9 @@ class UserAccountViewModel(
     fun getProductList(): LiveData<List<InvestorProductData>> = productList
     fun isUserLoggedIn(): LiveData<Boolean> = isUserLoggedIn
     fun getTotalPlanValue(): LiveData<Float> = totalPlanValue
+
+    override fun onCleared() {
+        disposables.clear()
+        super.onCleared()
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.minimoneybox.repositories.userRepository
 
+import com.example.minimoneybox.customException.IncorrectLoginException
 import com.example.minimoneybox.network.authenticate.AuthenticateBody
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.data.UserData
@@ -19,9 +20,15 @@ class UserRepositoryImpl(
                 "ANYTHING"
             )
         )
-            .map {
-                if(it.isSuccessful && it.body() != null) UserData.User(name, it.body()!!.session.bearerToken)
-                else UserData.EMPTY
+            .flatMap {
+                if(it.isSuccessful && it.body() != null) {
+                    Single.just(UserData.User(name, it.body()!!.session.bearerToken))
+                }
+                else if(it.code() == 401){
+                    Single.error(IncorrectLoginException())
+                } else {
+                    Single.just(UserData.EMPTY)
+                }
             }
             .doOnSuccess { userSubject.onNext(it) }
     }

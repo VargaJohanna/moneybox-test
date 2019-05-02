@@ -23,10 +23,11 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val adapter = ProductAdapter(ArrayList(), this)
         return inflater.inflate(R.layout.fragment_user_account, container, false).apply {
+            userAccountViewModel.observeProductList()
             showName(account_progress_bar)
             showTotalPlanValue(account_progress_bar)
             generateProductList(adapter, account_recycler_view)
-            observeProductList(adapter, account_progress_bar)
+            displayProductList(adapter, account_progress_bar)
         }
     }
 
@@ -37,16 +38,16 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
         }
     }
 
-    private fun observeProductList(adapter: ProductAdapter, progressBar: ProgressBar) {
+    private fun displayProductList(adapter: ProductAdapter, progressBar: ProgressBar) {
         progressBar.show(true)
-        userAccountViewModel.getProductList().observe(requireActivity(), Observer {
+        userAccountViewModel.getProductList().observe(this, Observer {
             adapter.updateList(it)
             progressBar.show(false)
         })
     }
 
     private fun showName(progressbar: ProgressBar) {
-        userAccountViewModel.getName().observe(requireActivity(), Observer {
+        userAccountViewModel.getName().observe(this, Observer {
             if (it.isNotEmpty()) {
                 progressbar.show(false)
                 user_name.display(true)
@@ -56,13 +57,19 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
     }
 
     private fun showTotalPlanValue(progressbar: ProgressBar) {
-        userAccountViewModel.getTotalPlanValue().observe(requireActivity(), Observer {
+        userAccountViewModel.getTotalPlanValue().observe(this, Observer {
             progressbar.show(false)
             if (it != 0f) total_plan_value.text = String.format(getString(R.string.total_plan_value), it.toString())
         })
     }
 
     override fun onItemClick(product: InvestorProductData) {
-        findNavController().navigate(R.id.from_userAccount_to_individualProduct)
+        val action = UserAccountFragmentDirections.fromUserAccountToIndividualProduct(
+            product.id,
+            product.name,
+            product.planValue.toString(),
+            product.moneyBoxValue.toString()
+        )
+        findNavController().navigate(action)
     }
 }

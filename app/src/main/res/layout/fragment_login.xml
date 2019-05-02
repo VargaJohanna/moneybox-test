@@ -38,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
+                android:text="androidtest@moneyboxapp.com"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"/>
@@ -60,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
+                android:text="P455word12"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:inputType="textPassword"
                 android:maxLines="1"
@@ -83,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_full_name"
+                android:text="Errol the Owl"
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:singleLine="true"/>
