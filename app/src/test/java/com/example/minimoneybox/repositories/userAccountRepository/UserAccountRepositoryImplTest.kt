@@ -1,9 +1,8 @@
 package com.example.minimoneybox.repositories.userAccountRepository
 
-import android.service.autofill.UserData
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.UserData.*
+import com.example.minimoneybox.data.UserData.EMPTY
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.authenticate.AuthenticateBody
 import com.example.minimoneybox.network.authenticate.AuthenticationEntity
@@ -15,7 +14,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
@@ -32,11 +30,6 @@ class UserAccountRepositoryImplTest {
     private val correctName = "Errol the Owl"
     private val wrongEmail = "testEmail"
     private val wrongPassword = "password"
-    private val expiredTokenErrorBody = "{\n" +
-            "    \"Name\": \"Bearer token expired\",\n" +
-            "    \"Message\": \"Your session has expired. Please close the app and log in again.\",\n" +
-            "    \"ValidationErrors\": []\n" +
-            "}"
     private val failedLoginErrorBody = "{\n" +
             "    \"Name\": \"Login failed\",\n" +
             "    \"Message\": \"Incorrect email address or password. Please check and try again.\",\n" +
@@ -49,7 +42,8 @@ class UserAccountRepositoryImplTest {
         val userAccountRepository = givenUserAccountRepositoryWithLogin()
 
         //When
-        val testObserver = userAccountRepository.login(email = correctEmail, password = correctPassword, name = correctName).test()
+        val testObserver =
+            userAccountRepository.login(email = correctEmail, password = correctPassword, name = correctName).test()
 
         //Then
         testObserver.assertValue {
@@ -65,7 +59,8 @@ class UserAccountRepositoryImplTest {
         val userAccountRepository = givenUserAccountRepositoryWithLogin()
 
         //When
-        val testObserver = userAccountRepository.login(email = correctEmail, password = correctPassword, name = "").test()
+        val testObserver =
+            userAccountRepository.login(email = correctEmail, password = correctPassword, name = "").test()
 
         //Then
         testObserver.assertValue {
@@ -92,7 +87,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    fun `should fail login when the password is wrong`(){
+    fun `should fail login when the password is wrong`() {
         // Given
         val userAccountRepository = givenUserAccountRepositoryFailedLogin(failedLoginErrorBody)
 
@@ -108,7 +103,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    fun `should fail login when both email and password is wrong`(){
+    fun `should fail login when both email and password is wrong`() {
         // Given
         val userAccountRepository = givenUserAccountRepositoryFailedLogin(failedLoginErrorBody)
 
@@ -124,7 +119,7 @@ class UserAccountRepositoryImplTest {
     }
 
     @Test
-    fun `should set userData to EMPTY when clearUserData() is called`(){
+    fun `should set userData to EMPTY when clearUserData() is called`() {
         //Given
         val userAccountRepository = givenUserAccountRepositoryWithLogin()
 
@@ -141,15 +136,20 @@ class UserAccountRepositoryImplTest {
     }
 
     private fun givenUserAccountRepositoryWithLogin(): UserAccountRepositoryImpl {
-        whenever(service.login(AuthenticateBody(correctEmail, correctPassword, "ANYTHING"))).thenReturn(Single.just(
-            Response.success(AuthenticationEntity(UserEntity("Tech", "Test"), SessionEntity("token")))))
+        whenever(service.login(AuthenticateBody(correctEmail, correctPassword, "ANYTHING"))).thenReturn(
+            Single.just(
+                Response.success(AuthenticationEntity(UserEntity("Tech", "Test"), SessionEntity("token")))
+            )
+        )
         return UserAccountRepositoryImpl(service)
     }
 
     private fun givenUserAccountRepositoryFailedLogin(errorContent: String): UserAccountRepositoryImpl {
-        whenever(service.login(any())).thenReturn(Single.just(
-            Response.error(401, ResponseBody.create(MediaType.parse("application/json"), errorContent))
-        ))
+        whenever(service.login(any())).thenReturn(
+            Single.just(
+                Response.error(401, ResponseBody.create(MediaType.parse("application/json"), errorContent))
+            )
+        )
         return UserAccountRepositoryImpl(service)
     }
 }

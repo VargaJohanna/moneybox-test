@@ -1,6 +1,5 @@
 package com.example.minimoneybox.ui.userAccount
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,13 +49,21 @@ class UserAccountViewModel(
             .observeOn(rxSchedulers.main())
             .subscribe(
                 {
-                    it as ProductData.Product
-                    totalPlanValue.postValue(it.totalPlanValue)
-                    productList.postValue(it.productList)
+                    when (it) {
+                        ProductData.EMPTY -> {
+                            totalPlanValue.postValue(0f)
+                            productList.postValue(emptyList())
+                        }
+                        else -> {
+                            it as ProductData.Product
+                            totalPlanValue.postValue(it.totalPlanValue)
+                            productList.postValue(it.productList)
+                        }
+                    }
                 },
                 {
                     if (it is ServerException) {
-                        if(it.name == "Bearer token expired" || it.name == "User session not found") {
+                        if (it.name == "Bearer token expired" || it.name == "User session not found") {
                             logoutUser.postValue(true)
                         }
                         errorMessage.postValue(it.errorMessage)
