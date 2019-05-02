@@ -1,6 +1,5 @@
 package com.example.minimoneybox.ui.login
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 class LoginViewModel(
     private val userRepository: UserAccountRepository,
     private val rxSchedulers: RxSchedulers
-): ViewModel() {
+) : ViewModel() {
     private val disposables = CompositeDisposable()
     private val userData: MutableLiveData<UserData> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
@@ -22,12 +21,12 @@ class LoginViewModel(
     /**
      * Call the login request through the repository and map the result to LiveData
      */
-    fun login(email:String, password: String, name: String) {
+    fun login(email: String, password: String, name: String) {
         disposables += userRepository.login(email, password, name)
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
             .subscribe(
-                { t -> userData.postValue(t)},
+                { t -> userData.postValue(t) },
                 {
                     if (it is ServerException) {
                         errorMessage.postValue(it.errorMessage)
@@ -37,9 +36,11 @@ class LoginViewModel(
                 }
             )
     }
+
     fun resetUserData() {
         userData.postValue(UserData.EMPTY)
     }
+
     fun getUserData(): LiveData<UserData> = userData
     fun getErrorMessage(): LiveData<String> = errorMessage
 

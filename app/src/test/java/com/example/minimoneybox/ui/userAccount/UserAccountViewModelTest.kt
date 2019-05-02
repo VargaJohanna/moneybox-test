@@ -118,7 +118,7 @@ class UserAccountViewModelTest {
     }
 
     @Test
-    fun `logoutUser should be true when the token expired`() {
+    fun `logoutUser should be true when the token is expired`() {
         //Given
         val userAccountViewModel = givenUserAccountViewModelWithError()
         userAccountViewModel.observeProductList()
