@@ -1,7 +1,6 @@
 package com.example.minimoneybox.repositories.paymentRepository
 
 import com.example.minimoneybox.model.MoneyboxValue
-import io.reactivex.Observable
 import io.reactivex.Single
 
 interface PaymentRepository {

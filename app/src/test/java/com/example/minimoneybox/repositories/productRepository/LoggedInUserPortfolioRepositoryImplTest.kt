@@ -35,12 +35,6 @@ class LoggedInUserPortfolioRepositoryImplTest {
             "    \"ValidationErrors\": []\n" +
             "}"
 
-    private val invalidTokenErrorBody = "{\n" +
-            "    \"Name\": \"LoggedInUser session not found\",\n" +
-            "    \"Message\": \"Sorry but it looks like your session is not valid. Please close the app and log in again.\",\n" +
-            "    \"ValidationErrors\": []\n" +
-            "}"
-
     @Test
     fun `should fetch investor products when token is valid`() {
         //Given
@@ -73,25 +67,6 @@ class LoggedInUserPortfolioRepositoryImplTest {
         //Then
         val serverException =
             ServerException("Bearer token expired", "Your session has expired. Please close the app and log in again.")
-
-        testObserver.assertError(serverException)
-            .dispose()
-    }
-
-    @Test
-    fun `should return error when token is invalid`() {
-        //Given
-        val productRepository = givenProductRepositoryInvalidToken(invalidTokenErrorBody)
-
-        //When
-        val testObserver = productRepository.fetchInvestorProducts().test()
-
-        //Then
-        val serverException =
-            ServerException(
-                "LoggedInUser session not found",
-                "Sorry but it looks like your session is not valid. Please close the app and log in again."
-            )
 
         testObserver.assertError(serverException)
             .dispose()

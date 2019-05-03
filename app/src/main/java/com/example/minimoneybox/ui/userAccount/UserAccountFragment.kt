@@ -1,6 +1,7 @@
 package com.example.minimoneybox.ui.userAccount
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.minimoneybox.R
-import com.example.minimoneybox.model.InvestorProduct
 import com.example.minimoneybox.ext.display
 import com.example.minimoneybox.ext.restart
 import com.example.minimoneybox.ext.show
+import com.example.minimoneybox.model.InvestorProduct
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.fragment_user_account.view.*
 import org.koin.androidx.viewmodel.ext.viewModel
+
 
 class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
     private val userAccountViewModel: UserAccountViewModel by viewModel()
@@ -32,6 +34,10 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
             displayProductList(adapter, account_progress_bar)
             showErrorMessage()
             logoutUser()
+            swipe_refresh.setOnRefreshListener {
+                userAccountViewModel.observeProductList()
+                Handler().postDelayed({ swipe_refresh.isRefreshing = false }, 3000)
+            }
         }
     }
 

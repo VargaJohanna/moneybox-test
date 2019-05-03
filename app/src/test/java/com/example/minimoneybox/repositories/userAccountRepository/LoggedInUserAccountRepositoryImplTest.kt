@@ -8,6 +8,7 @@ import com.example.minimoneybox.network.authenticate.AuthenticateBody
 import com.example.minimoneybox.network.authenticate.AuthenticationEntity
 import com.example.minimoneybox.network.authenticate.SessionEntity
 import com.example.minimoneybox.network.authenticate.UserEntity
+import com.example.minimoneybox.test.idling.FetcherListener
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -24,6 +25,7 @@ class LoggedInUserAccountRepositoryImplTest {
     var mockito = InstantTaskExecutorRule()
 
     private val service = mock<MoneyBoxService>()
+    private val fetcherListener = mock<FetcherListener>()
 
     private val correctEmail = "androidtest@moneyboxapp.com"
     private val correctPassword = "P455word12"
@@ -141,7 +143,7 @@ class LoggedInUserAccountRepositoryImplTest {
                 Response.success(AuthenticationEntity(UserEntity("Tech", "Test"), SessionEntity("token")))
             )
         )
-        return UserAccountRepositoryImpl(service)
+        return UserAccountRepositoryImpl(service, fetcherListener)
     }
 
     private fun givenUserAccountRepositoryFailedLogin(errorContent: String): UserAccountRepositoryImpl {
@@ -150,6 +152,6 @@ class LoggedInUserAccountRepositoryImplTest {
                 Response.error(401, ResponseBody.create(MediaType.parse("application/json"), errorContent))
             )
         )
-        return UserAccountRepositoryImpl(service)
+        return UserAccountRepositoryImpl(service, fetcherListener)
     }
 }

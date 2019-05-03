@@ -8,7 +8,6 @@ import com.example.minimoneybox.model.Portfolio
 import com.example.minimoneybox.model.User
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
-import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -22,17 +21,23 @@ class ProductRepositoryImpl(
      * Get the user data and if it's not empty then fetch the investor products with the returned token.
      * Then map the response into a Portfolio data class
      */
-    override fun fetchInvestorProducts(): Observable<Portfolio> {
+    override fun fetchInvestorProducts(): Single<Portfolio> {
         return userRepository.getUserData()
-            .flatMapSingle {
+            .firstOrError()
+            .flatMap {
                 when (it) {
-                    User.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
+                    User.EMPTY -> Single.error(
+                        ServerException(
+                            Resources.getSystem().getString(R.string.generic_error_name),
+                            Resources.getSystem().getString(R.string.generic_error)
+                        )
+                    )
                     else -> service.getInvestorProducts("Bearer ${(it as User.LoggedInUser).bearerToken}")
                 }
             }
             .flatMap { response ->
                 if (response.isSuccessful && response.body() != null) {
-                    Observable.just(
+                    Single.just(
                         Portfolio.UserPortfolio(
                             response.body()!!.totalPlanValue,
                             response.body()!!.productList.map {
@@ -48,13 +53,23 @@ class ProductRepositoryImpl(
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
+                    Single.error(
+                        ServerException(
+                            Resources.getSystem().getString(R.string.generic_error_name),
+                            Resources.getSystem().getString(R.string.generic_error)
+                        )
+                    )
                 }
             }
     }
 
-    private fun generateError(response: ResponseBody): Observable<Portfolio> {
+    private fun generateError(response: ResponseBody): Single<Portfolio> {
         val jsonObjectError = JSONObject(response.string())
-        return Observable.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
+        return Single.error(
+            ServerException(
+                name = jsonObjectError.getString("Name"),
+                errorMessage = jsonObjectError.getString("Message")
+            )
+        )
     }
 }

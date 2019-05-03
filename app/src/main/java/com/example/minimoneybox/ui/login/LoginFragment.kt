@@ -110,9 +110,7 @@ class LoginFragment : Fragment() {
         } else if(!passwordValid) {
             til_password.error = getString(R.string.password_error)
             false
-        } else {
-            til_name.error == null //Send the login request only if the name error is not displayed
-        }
+        } else til_name.error == null
     }
 
     private fun hideErrors() {

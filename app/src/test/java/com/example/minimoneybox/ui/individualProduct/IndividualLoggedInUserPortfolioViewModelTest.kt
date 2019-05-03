@@ -10,7 +10,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Observable
+import io.reactivex.Single
 import junit.framework.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -90,13 +90,13 @@ class IndividualLoggedInUserPortfolioViewModelTest {
     }
 
     private fun givenIndividualProductViewModel(): IndividualProductViewModel {
-        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Observable.just(MoneyboxValue(20f)))
+        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Single.just(MoneyboxValue(20f)))
         return IndividualProductViewModel(1, paymentRepository, TestScheduler(), useRepository)
     }
 
     private fun givenIndividualProductViewModelWithError(): IndividualProductViewModel {
         whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(
-            Observable.error(
+            Single.error(
                 ServerException(
                     "Bearer token expired",
                     "Your session has expired. Please close the app and log in again."

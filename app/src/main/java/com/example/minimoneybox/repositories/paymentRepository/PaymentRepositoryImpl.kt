@@ -8,7 +8,6 @@ import com.example.minimoneybox.model.User
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.payment.OneOffPaymentBody
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
-import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -27,7 +26,12 @@ class PaymentRepositoryImpl(
             .firstOrError()
             .flatMap {
                 when (it) {
-                    User.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
+                    User.EMPTY -> Single.error(
+                        ServerException(
+                            Resources.getSystem().getString(R.string.generic_error_name),
+                            Resources.getSystem().getString(R.string.generic_error)
+                        )
+                    )
                     else -> service.payOneOffPayment(
                         "Bearer ${(it as User.LoggedInUser).bearerToken}",
                         OneOffPaymentBody(amount, productId)
@@ -39,13 +43,23 @@ class PaymentRepositoryImpl(
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
+                    Single.error(
+                        ServerException(
+                            Resources.getSystem().getString(R.string.generic_error_name),
+                            Resources.getSystem().getString(R.string.generic_error)
+                        )
+                    )
                 }
             }
     }
 
     private fun generateError(response: ResponseBody): Single<MoneyboxValue> {
         val jsonObjectError = JSONObject(response.string())
-        return Single.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
+        return Single.error(
+            ServerException(
+                name = jsonObjectError.getString("Name"),
+                errorMessage = jsonObjectError.getString("Message")
+            )
+        )
     }
 }

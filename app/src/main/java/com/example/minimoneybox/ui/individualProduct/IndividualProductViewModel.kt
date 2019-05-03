@@ -16,7 +16,7 @@ class IndividualProductViewModel(
     private val rxSchedulers: RxSchedulers,
     private val userRepository: UserAccountRepository
 
-    ) : ViewModel() {
+) : ViewModel() {
     private val disposables = CompositeDisposable()
     private val moneyboxValue: MutableLiveData<Float> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
@@ -30,7 +30,7 @@ class IndividualProductViewModel(
                 { moneyboxValue.postValue(it.moneyboxValue) },
                 {
                     if (it is ServerException) {
-                        if(it.name == "Bearer token expired" || it.name == "LoggedInUser session not found") {
+                        if (it.name == EXPIRED_TOKEN || it.name == SESSION_NOT_FOUND) {
                             logoutUser.postValue(true)
                         }
                         errorMessage.postValue(it.errorMessage)
@@ -50,5 +50,10 @@ class IndividualProductViewModel(
     override fun onCleared() {
         disposables.clear()
         super.onCleared()
+    }
+
+    companion object {
+        const val EXPIRED_TOKEN = "Bearer token expired"
+        const val SESSION_NOT_FOUND = "LoggedInUser session not found"
     }
 }

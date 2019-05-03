@@ -12,6 +12,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Observable
+import io.reactivex.Single
 import junit.framework.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -148,14 +149,14 @@ class LoggedInUserAccountViewModelTest {
 
     private fun givenUserAccountViewModel(): UserAccountViewModel {
         whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
-        whenever(productRepository.fetchInvestorProducts()).thenReturn(Observable.just(productData))
+        whenever(productRepository.fetchInvestorProducts()).thenReturn(Single.just(productData))
         return UserAccountViewModel(userRepository, productRepository, TestScheduler())
     }
 
     private fun givenUserAccountViewModelWithError(): UserAccountViewModel {
         whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(productRepository.fetchInvestorProducts()).thenReturn(
-            Observable.error(
+            Single.error(
                 ServerException(
                     "Bearer token expired",
                     "Your session has expired. Please close the app and log in again."
