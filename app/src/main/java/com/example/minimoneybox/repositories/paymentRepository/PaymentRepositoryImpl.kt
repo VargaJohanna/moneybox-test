@@ -20,11 +20,12 @@ class PaymentRepositoryImpl(
 ) : PaymentRepository {
     /**
      * Get the user data and if it's not empty then send the payment request with the returned token.
-     * Then map teh response into a MoneyboxValue.
+     * Then map the response into a MoneyboxValue.
      */
-    override fun payMoneybox(productId: Int, amount: Float): Observable<MoneyboxValue> {
+    override fun payMoneybox(productId: Int, amount: Float): Single<MoneyboxValue> {
         return userRepository.getUserData()
-            .flatMapSingle {
+            .firstOrError()
+            .flatMap {
                 when (it) {
                     User.EMPTY -> Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                     else -> service.payOneOffPayment(
@@ -34,17 +35,17 @@ class PaymentRepositoryImpl(
                 }
             }.flatMap { response ->
                 if (response.isSuccessful && response.body() != null) {
-                    Observable.just(MoneyboxValue(response.body()!!.moneyBoxNewValue.toFloat()))
+                    Single.just(MoneyboxValue(response.body()!!.moneyBoxNewValue.toFloat()))
                 } else if (response.errorBody() != null) {
                     generateError(response.errorBody()!!)
                 } else {
-                    Observable.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
+                    Single.error(ServerException(Resources.getSystem().getString(R.string.generic_error_name), Resources.getSystem().getString(R.string.generic_error)))
                 }
             }
     }
 
-    private fun generateError(response: ResponseBody): Observable<MoneyboxValue> {
+    private fun generateError(response: ResponseBody): Single<MoneyboxValue> {
         val jsonObjectError = JSONObject(response.string())
-        return Observable.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
+        return Single.error(ServerException(name = jsonObjectError.getString("Name"), errorMessage = jsonObjectError.getString("Message")))
     }
 }

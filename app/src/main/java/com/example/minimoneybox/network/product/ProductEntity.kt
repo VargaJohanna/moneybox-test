@@ -9,6 +9,6 @@ data class ProductEntity(
     val planValue: Float,
     @SerializedName("Moneybox")
     val moneyBox: Float,
-    @SerializedName("Portfolio")
+    @SerializedName("Product")
     val productDetailEntity: ProductDetailsEntity
 )

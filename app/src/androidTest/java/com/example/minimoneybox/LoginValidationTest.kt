@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.runner.AndroidJUnit4
-import com.example.minimoneybox.idling.FetcherListener
+import com.example.minimoneybox.test.idling.FetcherListener
 import com.example.minimoneybox.ui.login.LoginActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not

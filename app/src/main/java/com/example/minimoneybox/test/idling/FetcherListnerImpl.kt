@@ -1,4 +1,4 @@
-package com.example.minimoneybox.idling
+package com.example.minimoneybox.test.idling
 
 import androidx.test.espresso.IdlingResource
 

@@ -2,7 +2,8 @@ package com.example.minimoneybox.repositories.paymentRepository
 
 import com.example.minimoneybox.model.MoneyboxValue
 import io.reactivex.Observable
+import io.reactivex.Single
 
 interface PaymentRepository {
-    fun payMoneybox(productId: Int, amount: Float): Observable<MoneyboxValue>
+    fun payMoneybox(productId: Int, amount: Float): Single<MoneyboxValue>
 }

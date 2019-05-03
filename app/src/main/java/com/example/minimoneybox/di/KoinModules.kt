@@ -1,8 +1,8 @@
 package com.example.minimoneybox.di
 
 import com.example.minimoneybox.Constants
-import com.example.minimoneybox.idling.FetcherListener
-import com.example.minimoneybox.idling.FetcherListnerImpl
+import com.example.minimoneybox.test.idling.FetcherListener
+import com.example.minimoneybox.test.idling.FetcherListnerImpl
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepository
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepositoryImpl
@@ -34,18 +34,23 @@ val networkModule = module {
     single { RxJava2CallAdapterFactory.create() }
     single { GsonConverterFactory.create() }
     single {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-        client.interceptors()
         Retrofit.Builder()
-            .client(client)
+            .client(get())
             .baseUrl(Constants.MONEYBOX_BASE_URL)
             .addCallAdapterFactory(get<RxJava2CallAdapterFactory>())
             .addConverterFactory(get<GsonConverterFactory>())
             .build()
+    }
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(get<HttpLoggingInterceptor>())
+            .build()
+    }
+    factory {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        //For debugging purposes I'm logging the body. It should be removed on production
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpLoggingInterceptor
     }
 }
 

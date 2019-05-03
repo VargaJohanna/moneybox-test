@@ -4,7 +4,7 @@ import android.content.res.Resources
 import com.example.minimoneybox.R
 import com.example.minimoneybox.customException.ServerException
 import com.example.minimoneybox.model.User
-import com.example.minimoneybox.idling.FetcherListener
+import com.example.minimoneybox.test.idling.FetcherListener
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.authenticate.AuthenticateBody
 import io.reactivex.Single
