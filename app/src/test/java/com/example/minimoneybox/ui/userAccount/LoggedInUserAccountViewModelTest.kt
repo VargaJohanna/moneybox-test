@@ -3,9 +3,9 @@ package com.example.minimoneybox.ui.userAccount
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.TestScheduler
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.InvestorProductData
-import com.example.minimoneybox.data.ProductData
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.InvestorProduct
+import com.example.minimoneybox.model.Portfolio
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.repositories.productRepository.ProductRepository
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.nhaarman.mockitokotlin2.mock
@@ -17,17 +17,17 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.Arrays.asList
 
-class UserAccountViewModelTest {
+class LoggedInUserAccountViewModelTest {
     @Rule
     @JvmField
     var mockito = InstantTaskExecutorRule()
 
     private val userRepository = mock<UserAccountRepository>()
     private val productRepository = mock<ProductRepository>()
-    private val productData = ProductData.Product(
+    private val productData = Portfolio.UserPortfolio(
         totalPlanValue = 1000f,
         productList = asList(
-            InvestorProductData(
+            InvestorProduct(
                 id = 1, planValue = 100f, name = "test", moneyBoxValue = 50f, productColour = "colour"
             )
         )
@@ -82,7 +82,7 @@ class UserAccountViewModelTest {
         //Then
         assertEquals(
             asList(
-                InvestorProductData(
+                InvestorProduct(
                     id = 1, planValue = 100f, name = "test", moneyBoxValue = 50f, productColour = "colour"
                 )
             ),
@@ -147,13 +147,13 @@ class UserAccountViewModelTest {
     }
 
     private fun givenUserAccountViewModel(): UserAccountViewModel {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(productRepository.fetchInvestorProducts()).thenReturn(Observable.just(productData))
         return UserAccountViewModel(userRepository, productRepository, TestScheduler())
     }
 
     private fun givenUserAccountViewModelWithError(): UserAccountViewModel {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(productRepository.fetchInvestorProducts()).thenReturn(
             Observable.error(
                 ServerException(

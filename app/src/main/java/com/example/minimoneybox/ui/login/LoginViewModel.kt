@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.ext.plusAssign
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.example.minimoneybox.rx.RxSchedulers
@@ -15,7 +15,7 @@ class LoginViewModel(
     private val rxSchedulers: RxSchedulers
 ) : ViewModel() {
     private val disposables = CompositeDisposable()
-    private val userData: MutableLiveData<UserData> = MutableLiveData()
+    private val userData: MutableLiveData<User> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
 
     /**
@@ -38,10 +38,10 @@ class LoginViewModel(
     }
 
     fun resetUserData() {
-        userData.postValue(UserData.EMPTY)
+        userData.postValue(User.EMPTY)
     }
 
-    fun getUserData(): LiveData<UserData> = userData
+    fun getUserData(): LiveData<User> = userData
     fun getErrorMessage(): LiveData<String> = errorMessage
 
     override fun onCleared() {

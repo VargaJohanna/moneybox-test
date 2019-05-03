@@ -2,9 +2,9 @@ package com.example.minimoneybox.repositories.productRepository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.InvestorProductData
-import com.example.minimoneybox.data.ProductData
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.InvestorProduct
+import com.example.minimoneybox.model.Portfolio
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.product.InvestorProductResponseEntity
 import com.example.minimoneybox.network.product.ProductDetailsEntity
@@ -22,7 +22,7 @@ import org.junit.Test
 import retrofit2.Response
 import java.util.Arrays.asList
 
-class ProductRepositoryImplTest {
+class LoggedInUserPortfolioRepositoryImplTest {
     @Rule
     @JvmField
     var mockito = InstantTaskExecutorRule()
@@ -36,7 +36,7 @@ class ProductRepositoryImplTest {
             "}"
 
     private val invalidTokenErrorBody = "{\n" +
-            "    \"Name\": \"User session not found\",\n" +
+            "    \"Name\": \"LoggedInUser session not found\",\n" +
             "    \"Message\": \"Sorry but it looks like your session is not valid. Please close the app and log in again.\",\n" +
             "    \"ValidationErrors\": []\n" +
             "}"
@@ -51,10 +51,10 @@ class ProductRepositoryImplTest {
 
         //Then
         testObserver.assertValue {
-            it == ProductData.Product(
+            it == Portfolio.UserPortfolio(
                 totalPlanValue = 1000f,
                 productList = asList(
-                    InvestorProductData(
+                    InvestorProduct(
                         id = 1, planValue = 100f, name = "test", moneyBoxValue = 50f, productColour = "colour"
                     )
                 )
@@ -89,7 +89,7 @@ class ProductRepositoryImplTest {
         //Then
         val serverException =
             ServerException(
-                "User session not found",
+                "LoggedInUser session not found",
                 "Sorry but it looks like your session is not valid. Please close the app and log in again."
             )
 
@@ -98,7 +98,7 @@ class ProductRepositoryImplTest {
     }
 
     private fun givenProductRepositoryWithData(): ProductRepositoryImpl {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(service.getInvestorProducts(any())).thenReturn(
             Single.just(
                 Response.success(
@@ -120,7 +120,7 @@ class ProductRepositoryImplTest {
     }
 
     private fun givenProductRepositoryInvalidToken(errorContent: String): ProductRepositoryImpl {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(service.getInvestorProducts(any())).thenReturn(
             Single.just(
                 Response.error(401, ResponseBody.create(MediaType.parse("application/json"), errorContent))

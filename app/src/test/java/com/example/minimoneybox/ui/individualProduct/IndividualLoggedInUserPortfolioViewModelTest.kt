@@ -3,7 +3,7 @@ package com.example.minimoneybox.ui.individualProduct
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.TestScheduler
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.MoneyboxData
+import com.example.minimoneybox.model.MoneyboxValue
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepository
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.nhaarman.mockitokotlin2.any
@@ -15,7 +15,7 @@ import junit.framework.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
-class IndividualProductViewModelTest {
+class IndividualLoggedInUserPortfolioViewModelTest {
     @Rule
     @JvmField
     var mockito = InstantTaskExecutorRule()
@@ -90,7 +90,7 @@ class IndividualProductViewModelTest {
     }
 
     private fun givenIndividualProductViewModel(): IndividualProductViewModel {
-        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Observable.just(MoneyboxData(20f)))
+        whenever(paymentRepository.payMoneybox(any(), any())).thenReturn(Observable.just(MoneyboxValue(20f)))
         return IndividualProductViewModel(1, paymentRepository, TestScheduler(), useRepository)
     }
 

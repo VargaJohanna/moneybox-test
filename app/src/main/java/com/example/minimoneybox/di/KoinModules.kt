@@ -1,6 +1,8 @@
 package com.example.minimoneybox.di
 
 import com.example.minimoneybox.Constants
+import com.example.minimoneybox.idling.FetcherListener
+import com.example.minimoneybox.idling.FetcherListnerImpl
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepository
 import com.example.minimoneybox.repositories.paymentRepository.PaymentRepositoryImpl
@@ -22,7 +24,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 val repositoryModule = module {
-    single<UserAccountRepository> { UserAccountRepositoryImpl(get()) }
+    single<UserAccountRepository> { UserAccountRepositoryImpl(get(), get()) }
     single<ProductRepository> { ProductRepositoryImpl(get(), get()) }
     single<PaymentRepository> { PaymentRepositoryImpl(get(), get()) }
 }
@@ -55,6 +57,10 @@ val viewModelModule = module {
 
 val schedulerModule = module {
     factory<RxSchedulers> { SchedulersImpl() }
+}
+
+val testModule = module {
+    single<FetcherListener> { FetcherListnerImpl() }
 }
 
 

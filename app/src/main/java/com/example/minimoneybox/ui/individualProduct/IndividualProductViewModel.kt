@@ -30,7 +30,7 @@ class IndividualProductViewModel(
                 { moneyboxValue.postValue(it.moneyboxValue) },
                 {
                     if (it is ServerException) {
-                        if(it.name == "Bearer token expired" || it.name == "User session not found") {
+                        if(it.name == "Bearer token expired" || it.name == "LoggedInUser session not found") {
                             logoutUser.postValue(true)
                         }
                         errorMessage.postValue(it.errorMessage)

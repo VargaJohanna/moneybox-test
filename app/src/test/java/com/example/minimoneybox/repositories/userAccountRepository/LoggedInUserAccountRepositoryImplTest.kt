@@ -2,7 +2,7 @@ package com.example.minimoneybox.repositories.userAccountRepository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.UserData.EMPTY
+import com.example.minimoneybox.model.User.EMPTY
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.authenticate.AuthenticateBody
 import com.example.minimoneybox.network.authenticate.AuthenticationEntity
@@ -18,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
 
-class UserAccountRepositoryImplTest {
+class LoggedInUserAccountRepositoryImplTest {
     @Rule
     @JvmField
     var mockito = InstantTaskExecutorRule()

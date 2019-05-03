@@ -1,19 +1,20 @@
 package com.example.minimoneybox
 
 import android.app.Application
-import com.example.minimoneybox.di.networkModule
-import com.example.minimoneybox.di.repositoryModule
-import com.example.minimoneybox.di.schedulerModule
-import com.example.minimoneybox.di.viewModelModule
+import com.example.minimoneybox.di.*
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
+    lateinit var koinApplication: KoinApplication
+        private set
+
     override fun onCreate() {
         super.onCreate()
-        startKoin {
+        koinApplication = startKoin {
             androidContext(this@MyApplication)
-            modules(repositoryModule, networkModule, viewModelModule, schedulerModule)
+            modules(repositoryModule, networkModule, viewModelModule, schedulerModule, testModule)
         }
     }
 }

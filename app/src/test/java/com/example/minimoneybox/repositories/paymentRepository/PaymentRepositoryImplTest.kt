@@ -2,7 +2,7 @@ package com.example.minimoneybox.repositories.paymentRepository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.network.MoneyBoxService
 import com.example.minimoneybox.network.payment.MoneyboxEntity
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
@@ -63,7 +63,7 @@ class PaymentRepositoryImplTest {
     }
 
     private fun givenPaymentRepositorySuccess(): PaymentRepositoryImpl {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(service.payOneOffPayment(any(), any())).thenReturn(
             Single.just(
                 Response.success(MoneyboxEntity(100))
@@ -73,7 +73,7 @@ class PaymentRepositoryImplTest {
     }
 
     private fun givenPaymentRepositoryExpiredToken(): PaymentRepositoryImpl {
-        whenever(userRepository.getUserData()).thenReturn(Observable.just(UserData.User("name", "token")))
+        whenever(userRepository.getUserData()).thenReturn(Observable.just(User.LoggedInUser("name", "token")))
         whenever(service.payOneOffPayment(any(), any())).thenReturn(
             Single.just(
                 Response.error(401, ResponseBody.create(MediaType.parse("application/json"), expiredTokenErrorBody))

@@ -3,7 +3,7 @@ package com.example.minimoneybox.ui.login
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.minimoneybox.TestScheduler
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -24,7 +24,7 @@ class LoginViewModelTest {
     private val correctEmail = "androidtest@moneyboxapp.com"
     private val correctPassword = "P455word12"
     private val correctName = "Errol the Owl"
-    private val user = UserData.User(correctName, "token")
+    private val user = User.LoggedInUser(correctName, "token")
 
     @Test
     fun `should delegate to userRepository when login() is called`() {
@@ -48,7 +48,7 @@ class LoginViewModelTest {
 
         //Then
         loginViewModel.getUserData().observeForever(mock())
-        assertEquals(UserData.EMPTY, loginViewModel.getUserData().value)
+        assertEquals(User.EMPTY, loginViewModel.getUserData().value)
     }
 
     @Test

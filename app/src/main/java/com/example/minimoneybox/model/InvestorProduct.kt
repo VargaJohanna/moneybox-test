@@ -1,6 +1,6 @@
-package com.example.minimoneybox.data
+package com.example.minimoneybox.model
 
-data class InvestorProductData(
+data class InvestorProduct(
     val id: Int,
     val planValue: Float,
     val name: String,

@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.minimoneybox.R
-import com.example.minimoneybox.data.InvestorProductData
+import com.example.minimoneybox.model.InvestorProduct
 import kotlinx.android.synthetic.main.row_account.view.*
 
 class ProductAdapter(
-    private var productList: List<InvestorProductData>,
+    private var productList: List<InvestorProduct>,
     private val itemClickListener: ItemClickListener
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
@@ -28,7 +28,7 @@ class ProductAdapter(
     }
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(product: InvestorProductData) {
+        fun bind(product: InvestorProduct) {
             itemView.product_friendly_name.text = product.name
             itemView.product_plan_value.text =
                 String.format(itemView.context.getString(R.string.product_plan_value), product.planValue.toString())
@@ -46,12 +46,12 @@ class ProductAdapter(
         }
     }
 
-    fun updateList(list: List<InvestorProductData>) {
+    fun updateList(list: List<InvestorProduct>) {
         this.productList = list
         notifyDataSetChanged()
     }
 
     interface ItemClickListener {
-        fun onItemClick(product: InvestorProductData)
+        fun onItemClick(product: InvestorProduct)
     }
 }

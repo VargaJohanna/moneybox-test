@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.minimoneybox.customException.ServerException
-import com.example.minimoneybox.data.InvestorProductData
-import com.example.minimoneybox.data.ProductData
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.InvestorProduct
+import com.example.minimoneybox.model.Portfolio
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.ext.plusAssign
 import com.example.minimoneybox.repositories.productRepository.ProductRepository
 import com.example.minimoneybox.repositories.userAccountRepository.UserAccountRepository
@@ -23,7 +23,7 @@ class UserAccountViewModel(
 ) : ViewModel() {
     private val disposables = CompositeDisposable()
     private val name: MutableLiveData<String> = MutableLiveData()
-    private val productList: MutableLiveData<List<InvestorProductData>> = MutableLiveData()
+    private val productList: MutableLiveData<List<InvestorProduct>> = MutableLiveData()
     private val totalPlanValue: MutableLiveData<Float> = MutableLiveData()
     private val logoutUser: MutableLiveData<Boolean> = MutableLiveData()
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
@@ -37,7 +37,7 @@ class UserAccountViewModel(
             .subscribeOn(rxSchedulers.io())
             .observeOn(rxSchedulers.main())
             .subscribe {
-                if (it is UserData.User) {
+                if (it is User.LoggedInUser) {
                     name.postValue(it.name)
                 }
             }
@@ -50,12 +50,12 @@ class UserAccountViewModel(
             .subscribe(
                 {
                     when (it) {
-                        ProductData.EMPTY -> {
+                        Portfolio.EMPTY -> {
                             totalPlanValue.postValue(0f)
                             productList.postValue(emptyList())
                         }
                         else -> {
-                            it as ProductData.Product
+                            it as Portfolio.UserPortfolio
                             totalPlanValue.postValue(it.totalPlanValue)
                             productList.postValue(it.productList)
                         }
@@ -63,7 +63,7 @@ class UserAccountViewModel(
                 },
                 {
                     if (it is ServerException) {
-                        if (it.name == "Bearer token expired" || it.name == "User session not found") {
+                        if (it.name == "Bearer token expired" || it.name == "LoggedInUser session not found") {
                             logoutUser.postValue(true)
                         }
                         errorMessage.postValue(it.errorMessage)
@@ -77,7 +77,7 @@ class UserAccountViewModel(
     }
 
     fun getName(): LiveData<String> = name
-    fun getProductList(): LiveData<List<InvestorProductData>> = productList
+    fun getProductList(): LiveData<List<InvestorProduct>> = productList
     fun logoutUser(): LiveData<Boolean> = logoutUser
     fun getTotalPlanValue(): LiveData<Float> = totalPlanValue
     fun getErrorMessage(): LiveData<String> = errorMessage

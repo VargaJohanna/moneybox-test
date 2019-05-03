@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.minimoneybox.R
-import com.example.minimoneybox.data.InvestorProductData
+import com.example.minimoneybox.model.InvestorProduct
 import com.example.minimoneybox.ext.display
 import com.example.minimoneybox.ext.restart
 import com.example.minimoneybox.ext.show
@@ -65,7 +65,7 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
         })
     }
 
-    override fun onItemClick(product: InvestorProductData) {
+    override fun onItemClick(product: InvestorProduct) {
         val action = UserAccountFragmentDirections.fromUserAccountToIndividualProduct(
             product.id,
             product.name,

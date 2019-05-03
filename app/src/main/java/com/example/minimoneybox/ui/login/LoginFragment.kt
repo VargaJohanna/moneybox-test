@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.minimoneybox.R
-import com.example.minimoneybox.data.UserData
+import com.example.minimoneybox.model.User
 import com.example.minimoneybox.ext.show
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
@@ -62,11 +62,11 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * When UserData.User is returned then navigate to the next screen.
+     * When LoggedInUser.LoggedInUser is returned then navigate to the next screen.
      */
     private fun observeUserData(progressbar: ProgressBar) {
         loginViewModel.getUserData().observe(this, Observer {
-            if(it is UserData.User) {
+            if(it is User.LoggedInUser) {
                 findNavController().navigate(R.id.from_login_to_user_account)
             } else {
                 progressbar.show(false)
