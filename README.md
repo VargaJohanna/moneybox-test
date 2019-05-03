@@ -38,11 +38,11 @@ When the bearer token expires then the user is forced to login again by calling 
 
 
 Used libraries:
-⋅⋅* Koin
-⋅⋅* Retrofit
-⋅⋅* RxJava
-⋅⋅* Espresso, Junit
-⋅⋅* Mockito
+* Koin
+* Retrofit
+* RxJava
+* Espresso, Junit
+* Mockito
 
 
 I provided a sample unit and Espresso test suite as well.
