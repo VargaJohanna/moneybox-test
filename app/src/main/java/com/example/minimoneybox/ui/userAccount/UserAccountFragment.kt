@@ -34,7 +34,7 @@ class UserAccountFragment : Fragment(), ProductAdapter.ItemClickListener {
             displayProductList(adapter, account_progress_bar)
             showErrorMessage()
             logoutUser()
-            swipe_refresh.setOnRefreshListener {
+            swipe_refresh.setOnRefreshListener { // This is to allow the user to retry and get the results in case of a server side error.
                 userAccountViewModel.observeProductList()
                 Handler().postDelayed({ swipe_refresh.isRefreshing = false }, 3000)
             }

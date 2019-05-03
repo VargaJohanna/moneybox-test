@@ -40,7 +40,7 @@ class LoginFragment : Fragment() {
     }
 
     /**
-     * Reset animation onStop so tha app won't crash when it's in the background
+     * Reset animation onStop so the app won't crash when it's in the background
      */
     override fun onStop() {
         pig_animation.setMinAndMaxFrame(firstAnim.first, secondAnim.second)
@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
                 loginViewModel.login(et_email.text.toString(), et_password.text.toString(), et_name.text.toString())
                 login_progress_bar.show(true)
                 pig_animation.pauseAnimation()
-//                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.input_valid, Toast.LENGTH_SHORT).show()
             }
         }
     }
